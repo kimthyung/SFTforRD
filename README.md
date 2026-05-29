@@ -19,19 +19,14 @@ RackForce_BiLSTM_ELM/
 │   ├── train_bilstm.py        # train BiLSTM
 │   ├── fit_elm.py             # fit ELM residual corrector
 │   ├── predict.py             # single-file inference
-│   ├── evaluate.py            # benchmark on the 8 test scenarios
-│   └── baselines/
-│       └── nn_baselines.py    # BiGRURegressor, LSTMRegressor
+│   └── evaluate.py            # benchmark on the 8 test scenarios
 ├── data/
 │   ├── train/                 # 4 training CSVs for the BiLSTM
 │   ├── elm_train/             # 3 slip-rich CSVs used to fit the ELM
 │   └── test/                  # 8 evaluation CSVs
 ├── weights/
 │   ├── BiLSTM.pt              # trained BiLSTM
-│   ├── ELM.pt                 # fitted ELM
-│   └── baselines/
-│       ├── BiGRU.pt           # baseline BiGRU
-│       └── LSTM.pt            # baseline LSTM
+│   └── ELM.pt                 # fitted ELM
 ├── results/                   # evaluation.csv (created by evaluate.py)
 ├── requirements.txt
 └── README.md
@@ -84,6 +79,7 @@ release-tested defaults are:
 | BiLSTM | optimizer | Adam, lr = 1e-3, batch = 128 |
 | BiLSTM | early stopping | patience = 200 epochs |
 | BiLSTM | training data | `data/train/Train_set_1..4.CSV` |
+| BiLSTM | random seed | 43 |
 | ELM | input features | `Car.SlipAngleFL`, `Car.SlipAngleFR`, `Car.YawRate`, `Driver.Steer.Ang`, `Car.ay` |
 | ELM | hidden units | 100 |
 | ELM | activation | sigmoid |
@@ -151,7 +147,47 @@ When `--output preds.npz` is supplied, the file contains
 ### 4. Benchmark on the 8 test scenarios
 
 ```bash
-python evaluate.py                 # BiLSTM and BiLSTM + ELM only
-
+python evaluate.py
 ```
 
+NRMSE is normalized by the per-scenario `max − min` of the ground-truth
+rack force; the table below shows the released numbers.
+
+## Reference numbers (released weights)
+
+| Scenario              | BiLSTM  | BiLSTM + ELM |
+|:----------------------|:-------:|:------------:|
+| gm_nor                | 1.30 %  | 1.65 %       |
+| low_speed             | 3.96 %  | 3.96 %       |
+| stationary_steering   | 6.30 %  | 6.30 %       |
+| sine_60               | 0.74 %  | 0.74 %       |
+| sine_15               | 3.01 %  | 3.01 %       |
+| gm_mu_0.6             | 14.80 % | **6.70 %**   |
+| gm_mu_0.4             | 24.78 % | **6.60 %**   |
+| gm_agg                | 4.45 %  | **3.23 %**   |
+| **Overall (mean)**    | 7.41 %  | **4.02 %**   |
+
+The ELM yields its largest gains on the low-friction scenarios
+(μ = 0.4 and μ = 0.6) where slip dynamics dominate and the BiLSTM-only
+baseline is weakest. On the remaining scenarios the slip mask keeps the
+ELM inactive, so the `+ELM` column matches the BiLSTM-only column
+exactly.
+
+## Data format
+
+Each CSV is a CarMaker time-series export sampled at 100 Hz. The required
+columns are:
+
+* BiLSTM inputs — `Car.YawRate`, `Car.ay`, `Driver.Steer.Ang`,
+  `Driver.Steer.AngVel`, `Car.vx`
+* Targets — `Car.CFL.GenFrc2` and `Car.CFR.GenFrc2` (summed into
+  `RackForce` by `data.load_csv`)
+* For ELM correction at inference — `Car.SlipAngleFL`,
+  `Car.SlipAngleFR`, `Car.LongSlipFL`, `Car.LongSlipFR`, `Car.vx`
+
+If your CSV uses CarMaker's legacy header layout (first column literally
+named `#Name`) `load_csv` will automatically realign and clean it.
+
+## Citation
+
+If you use this code, please cite the accompanying paper.
