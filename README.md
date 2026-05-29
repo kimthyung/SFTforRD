@@ -151,20 +151,9 @@ python evaluate.py
 This prints a per-scenario RMSE table (BiLSTM vs. BiLSTM + ELM) and
 writes the raw values to `results/evaluation.csv`.
 
-## Data format
+## Dataset
 
-Each CSV is a CarMaker time-series export sampled at 100 Hz. The required
-columns are:
-
-* BiLSTM inputs — `Car.YawRate`, `Car.ay`, `Driver.Steer.Ang`,
-  `Driver.Steer.AngVel`, `Car.vx`
-* Targets — `Car.CFL.GenFrc2` and `Car.CFR.GenFrc2` (summed into
-  `RackForce` by `data.load_csv`)
-* For ELM correction at inference — `Car.SlipAngleFL`,
-  `Car.SlipAngleFR`, `Car.LongSlipFL`, `Car.LongSlipFR`, `Car.vx`
-
-If your CSV uses CarMaker's legacy header layout (first column literally
-named `#Name`) `load_csv` will automatically realign and clean it.
+Dataset can be downloaded from [here](https://drive.google.com/file/d/1UM0QaVniRXOfTPN_7-q81IFF1mYAS3AN/view?usp=sharing).
 
 ## Citation
 
