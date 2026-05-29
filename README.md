@@ -79,7 +79,6 @@ release-tested defaults are:
 | BiLSTM | optimizer | Adam, lr = 1e-3, batch = 128 |
 | BiLSTM | early stopping | patience = 200 epochs |
 | BiLSTM | training data | `data/train/Train_set_1..4.CSV` |
-| BiLSTM | random seed | 43 |
 | ELM | input features | `Car.SlipAngleFL`, `Car.SlipAngleFR`, `Car.YawRate`, `Driver.Steer.Ang`, `Car.ay` |
 | ELM | hidden units | 100 |
 | ELM | activation | sigmoid |
