@@ -155,6 +155,3 @@ writes the raw values to `results/evaluation.csv`.
 
 Dataset can be downloaded from [here](https://drive.google.com/file/d/1UM0QaVniRXOfTPN_7-q81IFF1mYAS3AN/view?usp=sharing).
 
-## Citation
-
-If you use this code, please cite the accompanying paper.
