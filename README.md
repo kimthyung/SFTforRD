@@ -11,7 +11,7 @@ applied only on slip-dominant samples (low-µ, large slip angle, etc.).
 ## Repository layout
 
 ```
-RackForce_BiLSTM_ELM/
+RackForce/
 ├── src/
 │   ├── config.py              # all hyperparameters and paths (edit this!)
 │   ├── models.py              # BiLSTMRegressor, ELM
@@ -138,7 +138,7 @@ The script reports
 
 * the number of samples (after windowing),
 * the percentage of samples the slip mask selected for ELM correction,
-* RMSE / NRMSE for BiLSTM-only and BiLSTM + ELM (only printed if the
+* RMSE (in Newtons) for BiLSTM-only and BiLSTM + ELM (only printed if the
   CSV contains ground-truth rack-force columns).
 
 When `--output preds.npz` is supplied, the file contains
@@ -150,28 +150,8 @@ When `--output preds.npz` is supplied, the file contains
 python evaluate.py
 ```
 
-NRMSE is normalized by the per-scenario `max − min` of the ground-truth
-rack force; the table below shows the released numbers.
-
-## Reference numbers (released weights)
-
-| Scenario              | BiLSTM  | BiLSTM + ELM |
-|:----------------------|:-------:|:------------:|
-| gm_nor                | 1.30 %  | 1.65 %       |
-| low_speed             | 3.96 %  | 3.96 %       |
-| stationary_steering   | 6.30 %  | 6.30 %       |
-| sine_60               | 0.74 %  | 0.74 %       |
-| sine_15               | 3.01 %  | 3.01 %       |
-| gm_mu_0.6             | 14.80 % | **6.70 %**   |
-| gm_mu_0.4             | 24.78 % | **6.60 %**   |
-| gm_agg                | 4.45 %  | **3.23 %**   |
-| **Overall (mean)**    | 7.41 %  | **4.02 %**   |
-
-The ELM yields its largest gains on the low-friction scenarios
-(μ = 0.4 and μ = 0.6) where slip dynamics dominate and the BiLSTM-only
-baseline is weakest. On the remaining scenarios the slip mask keeps the
-ELM inactive, so the `+ELM` column matches the BiLSTM-only column
-exactly.
+This prints a per-scenario RMSE table (BiLSTM vs. BiLSTM + ELM) and
+writes the raw values to `results/evaluation.csv`.
 
 ## Data format
 
