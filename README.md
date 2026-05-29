@@ -1,12 +1,11 @@
 # Rack Force Estimation with BiLSTM + ELM
 
-Reference implementation of a hybrid **BiLSTM + Extreme Learning Machine
-(ELM)** model that estimates the rack force of an electric power steering
-system from five vehicle-dynamics signals available at the remote driver.
+Implementation of a hybrid **BiLSTM + Extreme Learning Machine
+(ELM)** model that estimates the rack force for remote driver.
 
 The BiLSTM produces a base estimate of the rack force from a short window
 of past samples; the ELM learns a closed-form residual corrector that is
-applied only on slip-dominant samples (low-µ, large slip angle, etc.).
+applied only on slip-dominant samples.
 
 ## Repository layout
 
